@@ -41,6 +41,8 @@ import org.apache.arrow.vector.Float4Vector;
 import org.apache.arrow.vector.Float8Vector;
 import org.apache.arrow.vector.IntVector;
 import org.apache.arrow.vector.SmallIntVector;
+import org.apache.arrow.vector.TimeStampNanoVector;
+import org.apache.arrow.vector.TimeStampNanoTZVector;
 import org.apache.arrow.vector.TimeStampMicroVector;
 import org.apache.arrow.vector.TimeStampMicroTZVector;
 import org.apache.arrow.vector.TimeStampMilliVector;
@@ -201,6 +203,10 @@ public final class FlightArrowColumnVector extends ColumnVector {
       accessor = new DateAccessor((DateDayVector) vector);
     } else if (vector instanceof DateMilliVector) {
       accessor = new DateMilliAccessor((DateMilliVector) vector);
+    } else if (vector instanceof TimeStampNanoVector) {
+      accessor = new TimestampNanoAccessor((TimeStampNanoVector) vector);
+    } else if (vector instanceof TimeStampNanoTZVector) {
+      accessor = new TimestampNanoTZAccessor((TimeStampNanoTZVector) vector);
     } else if (vector instanceof TimeStampMicroVector) {
       accessor = new TimestampMicroAccessor((TimeStampMicroVector) vector);
     } else if (vector instanceof TimeStampMicroTZVector) {
@@ -525,6 +531,36 @@ public final class FlightArrowColumnVector extends ColumnVector {
     @Override
     final long getLong(int rowId) {
       return accessor.get(rowId) * 1000;
+    }
+  }
+
+  private static class TimestampNanoAccessor extends ArrowVectorAccessor {
+
+    private final TimeStampVector accessor;
+
+    TimestampNanoAccessor(TimeStampNanoVector vector) {
+      super(vector);
+      this.accessor = vector;
+    }
+
+    @Override
+    final long getLong(int rowId) {
+      return accessor.get(rowId) / 1000;
+    }
+  }
+
+  private static class TimestampNanoTZAccessor extends ArrowVectorAccessor {
+
+    private final TimeStampVector accessor;
+
+    TimestampNanoTZAccessor(TimeStampNanoTZVector vector) {
+      super(vector);
+      this.accessor = vector;
+    }
+
+    @Override
+    final long getLong(int rowId) {
+      return accessor.get(rowId) / 1000;
     }
   }
 

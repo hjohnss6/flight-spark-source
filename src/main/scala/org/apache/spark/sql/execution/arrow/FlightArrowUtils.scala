@@ -70,7 +70,7 @@ object FlightArrowUtils {
     case ArrowType.Binary.INSTANCE => BinaryType
     case d: ArrowType.Decimal => DecimalType(d.getPrecision, d.getScale)
     case date: ArrowType.Date if date.getUnit == DateUnit.DAY || date.getUnit == DateUnit.MILLISECOND => DateType
-    case ts: ArrowType.Timestamp if ts.getUnit == TimeUnit.MICROSECOND || ts.getUnit == TimeUnit.MILLISECOND => TimestampType
+    case ts: ArrowType.Timestamp if ts.getUnit == TimeUnit.NANOSECOND || ts.getUnit == TimeUnit.MICROSECOND || ts.getUnit == TimeUnit.MILLISECOND => TimestampType
     case _ => throw new UnsupportedOperationException(s"Unsupported data type: $dt")
   }
 
