@@ -16,7 +16,10 @@
 
 package org.apache.arrow.flight.spark;
 
+import org.apache.arrow.flight.Location;
+
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class FlightClientOptions implements Serializable {
@@ -25,14 +28,16 @@ public class FlightClientOptions implements Serializable {
     private final String trustedCertificates;
     private final String clientCertificate;
     private final String clientKey;
+    private final String defaultLocation;
     private final List<FlightClientMiddlewareFactory> middleware;
 
-    public FlightClientOptions(String username, String password, String trustedCertificates, String clientCertificate, String clientKey, List<FlightClientMiddlewareFactory> middleware) {
+    public FlightClientOptions(String username, String password, String trustedCertificates, String clientCertificate, String clientKey, String defaultLocation, List<FlightClientMiddlewareFactory> middleware) {
         this.username = username;
         this.password = password;
         this.trustedCertificates = trustedCertificates;
         this.clientCertificate = clientCertificate;
         this.clientKey = clientKey;
+        this.defaultLocation = defaultLocation;
         this.middleware = middleware;
     }
 
@@ -54,6 +59,14 @@ public class FlightClientOptions implements Serializable {
 
     public String getClientKey() {
         return clientKey;
+    }
+
+    public Location getDefaultLocation() {
+      try {
+        return new Location(defaultLocation);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     public List<FlightClientMiddlewareFactory> getMiddleware() {

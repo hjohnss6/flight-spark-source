@@ -16,15 +16,17 @@
 
 package org.apache.arrow.flight.spark;
 
-import java.io.IOException;
-
-import org.apache.arrow.flight.grpc.CredentialCallOption;
-import org.apache.spark.sql.connector.read.PartitionReader;
-import org.apache.spark.sql.vectorized.ColumnarBatch;
 import org.apache.arrow.flight.FlightClient;
 import org.apache.arrow.flight.FlightStream;
+import org.apache.arrow.flight.Location;
+import org.apache.arrow.flight.grpc.CredentialCallOption;
 import org.apache.arrow.util.AutoCloseables;
+import org.apache.spark.sql.connector.read.PartitionReader;
 import org.apache.spark.sql.vectorized.ColumnVector;
+import org.apache.spark.sql.vectorized.ColumnarBatch;
+
+import java.io.IOException;
+import java.util.List;
 
 public class FlightColumnarPartitionReader implements PartitionReader<ColumnarBatch> {
   private final FlightClientFactory clientFactory;
@@ -32,8 +34,15 @@ public class FlightColumnarPartitionReader implements PartitionReader<ColumnarBa
   private final FlightStream stream;
 
   public FlightColumnarPartitionReader(FlightClientOptions clientOptions, FlightPartition partition) {
+    List<Location> locations = partition.getEndpoint().get().getLocations();
     // TODO - Should we handle multiple locations?
-    clientFactory = new FlightClientFactory(partition.getEndpoint().get().getLocations().get(0), clientOptions);
+    Location location;
+    if (locations.isEmpty()) {
+      location = clientOptions.getDefaultLocation();
+    } else {
+      location = locations.get(0);
+    }
+    clientFactory = new FlightClientFactory(location, clientOptions);
     client = clientFactory.apply();
     CredentialCallOption callOption = clientFactory.getCallOption();
     stream = client.getStream(partition.getEndpoint().get().getTicket(), callOption);

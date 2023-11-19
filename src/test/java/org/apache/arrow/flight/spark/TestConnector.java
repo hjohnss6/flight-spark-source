@@ -130,7 +130,7 @@ public class TestConnector {
   @Test(expected = None.class)
   public void testFlightPartitionReaderFactorySerialization() throws IOException {
     List<FlightClientMiddlewareFactory> middleware = new ArrayList<>();
-    FlightClientOptions clientOptions = new FlightClientOptions("xxx", "yyy", "FooBar", "FooBar", "FooBar", middleware);
+    FlightClientOptions clientOptions = new FlightClientOptions("xxx", "yyy", "FooBar", "FooBar", "FooBar", "grpc://localhost:47470", middleware);
     FlightPartitionReaderFactory readerFactory = new FlightPartitionReaderFactory(JavaSparkContext.fromSparkContext(spark.sparkContext()).broadcast(clientOptions));
 
     try (ObjectOutputStream oos = new DummyObjectOutputStream()) {

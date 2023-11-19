@@ -65,7 +65,7 @@ public class DefaultSource implements TableProvider, DataSourceRegister {
 
 
     Broadcast<FlightClientOptions> clientOptions = JavaSparkContext.fromSparkContext(getSparkSession().sparkContext()).broadcast(
-      new FlightClientOptions(username, password, trustedCertificates, clientCertificate, clientKey, middleware)
+      new FlightClientOptions(username, password, trustedCertificates, clientCertificate, clientKey, uri, middleware)
     );
 
     return new FlightTable(
