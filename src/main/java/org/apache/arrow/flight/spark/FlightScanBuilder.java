@@ -45,7 +45,7 @@ import scala.collection.JavaConversions;
 import com.google.common.collect.Lists;
 import com.google.common.base.Joiner;
 
-public class FlightScanBuilder implements ScanBuilder /* , SupportsPushDownRequiredColumns, SupportsPushDownFilters */{
+public class FlightScanBuilder implements ScanBuilder, SupportsPushDownRequiredColumns, SupportsPushDownFilters {
     private static final Logger LOGGER = LoggerFactory.getLogger(FlightScanBuilder.class);
     private static final Joiner WHERE_JOINER = Joiner.on(" and ");
     private static final Joiner PROJ_JOINER = Joiner.on(", ");
@@ -169,7 +169,6 @@ public class FlightScanBuilder implements ScanBuilder /* , SupportsPushDownRequi
         descriptor = getDescriptor(sql);
     }
 
-    /* 
     @Override
     public Filter[] pushFilters(Filter[] filters) {
         List<Filter> notPushed = Lists.newArrayList();
@@ -195,7 +194,6 @@ public class FlightScanBuilder implements ScanBuilder /* , SupportsPushDownRequi
     public Filter[] pushedFilters() {
         return pushed;
     }
-    */
 
     private DataType sparkFromArrow(FieldType fieldType) {
         switch (fieldType.getType().getTypeID()) {
@@ -281,7 +279,6 @@ public class FlightScanBuilder implements ScanBuilder /* , SupportsPushDownRequi
         descriptor = getDescriptor(sql);
     }
 
-    /*
     @Override
     public void pruneColumns(StructType requiredSchema) {
         if (requiredSchema.toSeq().isEmpty()) {
@@ -306,5 +303,4 @@ public class FlightScanBuilder implements ScanBuilder /* , SupportsPushDownRequi
             getFlightSchema(descriptor);
         }
     }
-    */
 }
